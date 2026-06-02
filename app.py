@@ -137,9 +137,16 @@ st.markdown("""
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-#  Sidebar — API key configuration
+#  Load API keys from Streamlit secrets (hidden from users)
 # ─────────────────────────────────────────────────────────────────────────────
-    st.markdown("---")
+gemini_api_key = st.secrets["GEMINI_API_KEY"]
+tavily_api_key = st.secrets["TAVILY_API_KEY"]
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+#  Sidebar — Instructions only (no API key inputs)
+# ─────────────────────────────────────────────────────────────────────────────
+with st.sidebar:
     st.markdown("### 📋 How it works")
     st.markdown("""
 1. 📤 Upload a PDF document
@@ -177,11 +184,11 @@ st.markdown("""
 #  Helper: validate API keys
 # ─────────────────────────────────────────────────────────────────────────────
 def validate_keys() -> bool:
-    if not gemini_api_key:
-        st.error("🔑 Please enter your **Google Gemini API key** in the sidebar.")
+    if not gemini_api_key or gemini_api_key == "":
+        st.error("🔑 Gemini API key not found. Please check your Streamlit secrets.")
         return False
-    if not tavily_api_key:
-        st.error("🔑 Please enter your **Tavily Search API key** in the sidebar.")
+    if not tavily_api_key or tavily_api_key == "":
+        st.error("🔑 Tavily API key not found. Please check your Streamlit secrets.")
         return False
     return True
 
