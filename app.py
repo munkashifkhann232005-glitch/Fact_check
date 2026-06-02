@@ -139,29 +139,6 @@ st.markdown("""
 # ─────────────────────────────────────────────────────────────────────────────
 #  Sidebar — API key configuration
 # ─────────────────────────────────────────────────────────────────────────────
-with st.sidebar:
-    st.markdown("## ⚙️ Configuration")
-    st.markdown("---")
-
-    # Try loading keys from st.secrets first (for cloud deployment)
-    default_gemini = st.secrets.get("GEMINI_API_KEY", "") if hasattr(st, "secrets") else ""
-    default_tavily = st.secrets.get("TAVILY_API_KEY", "") if hasattr(st, "secrets") else ""
-
-    gemini_api_key = st.text_input(
-        "🤖 Google Gemini API Key",
-        value=default_gemini,
-        type="password",
-        placeholder="AIza...",
-        help="Get your key at https://aistudio.google.com/",
-    )
-    tavily_api_key = st.text_input(
-        "🔎 Tavily Search API Key",
-        value=default_tavily,
-        type="password",
-        placeholder="tvly-...",
-        help="Get your key at https://tavily.com/",
-    )
-
     st.markdown("---")
     st.markdown("### 📋 How it works")
     st.markdown("""
