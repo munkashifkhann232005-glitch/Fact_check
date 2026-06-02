@@ -36,32 +36,38 @@ st.markdown("""
 <style>
     /* ── Global ── */
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-    html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
+    html, body, [class*="css"] { font-family: 'Inter', sans-serif; background-color: #ffffff; }
+
+    /* Main content area */
+    .main .block-container {
+        background-color: #ffffff;
+    }
 
     /* ── Header banner ── */
     .hero-header {
-        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
         border-radius: 16px;
         padding: 2.5rem 2rem;
         margin-bottom: 2rem;
-        border: 1px solid #334155;
+        border: 1px solid #bfdbfe;
         text-align: center;
     }
-    .hero-header h1 { color: #f8fafc; font-size: 2.4rem; font-weight: 700; margin: 0; }
-    .hero-header p  { color: #94a3b8; font-size: 1.05rem; margin: 0.5rem 0 0; }
+    .hero-header h1 { color: #ffffff; font-size: 2.4rem; font-weight: 700; margin: 0; }
+    .hero-header p  { color: #dbeafe; font-size: 1.05rem; margin: 0.5rem 0 0; }
 
     /* ── Section cards ── */
     .section-card {
-        background: #1e293b;
+        background: #ffffff;
         border-radius: 12px;
         padding: 1.5rem;
-        border: 1px solid #334155;
+        border: 1px solid #e5e7eb;
         margin-bottom: 1.5rem;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
     }
     .section-title {
         font-size: 1.1rem;
         font-weight: 600;
-        color: #e2e8f0;
+        color: #1e293b;
         margin-bottom: 1rem;
         display: flex;
         align-items: center;
@@ -80,60 +86,83 @@ st.markdown("""
     .badge-verified     { background:#dcfce7; color:#166534; }
     .badge-inaccurate   { background:#ffedd5; color:#9a3412; }
     .badge-false        { background:#fee2e2; color:#991b1b; }
-    .badge-unverifiable { background:#e2e8f0; color:#475569; }
+    .badge-unverifiable { background:#f1f5f9; color:#475569; }
 
     /* ── Metric cards ── */
     .metric-grid { display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:1.5rem; }
     .metric-card {
         flex:1; min-width:110px;
-        background:#0f172a;
+        background:#f8fafc;
         border-radius:10px;
         padding:1rem;
         text-align:center;
-        border:1px solid #334155;
+        border:1px solid #e2e8f0;
     }
-    .metric-value { font-size:2rem; font-weight:700; line-height:1; }
-    .metric-label { font-size:0.78rem; color:#94a3b8; margin-top:4px; }
+    .metric-value { font-size:2rem; font-weight:700; line-height:1; color: #1e293b; }
+    .metric-label { font-size:0.78rem; color:#64748b; margin-top:4px; }
 
     /* ── Claim row cards ── */
     .claim-card {
-        background:#0f172a;
+        background:#ffffff;
         border-radius:10px;
         padding:1rem 1.2rem;
         margin-bottom:0.75rem;
-        border-left: 4px solid #334155;
-        border-top:1px solid #1e293b;
+        border-left: 4px solid #3b82f6;
+        border-top: 1px solid #e5e7eb;
+        border-right: 1px solid #e5e7eb;
+        border-bottom: 1px solid #e5e7eb;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
     }
-    .claim-text  { font-size:0.92rem; color:#e2e8f0; font-weight:500; margin-bottom:0.4rem; }
-    .claim-meta  { font-size:0.82rem; color:#94a3b8; }
-    .claim-source a { color:#60a5fa; text-decoration:none; }
+    .claim-text  { font-size:0.92rem; color:#1e293b; font-weight:500; margin-bottom:0.4rem; }
+    .claim-meta  { font-size:0.82rem; color:#64748b; }
+    .claim-source a { color:#2563eb; text-decoration:none; }
     .claim-source a:hover { text-decoration:underline; }
 
     /* ── Progress ── */
-    .stProgress > div > div > div { background-color: #3b82f6 !important; }
+    .stProgress > div > div > div { background-color: #2563eb !important; }
 
     /* ── Upload area ── */
-    .upload-hint { font-size:0.85rem; color:#64748b; margin-top:0.5rem; }
+    .upload-hint { font-size:0.85rem; color:#6c757d; margin-top:0.5rem; }
 
     /* ── Sidebar ── */
-    section[data-testid="stSidebar"] { background:#0f172a; }
+    section[data-testid="stSidebar"] { 
+        background: #f8f9fa; 
+        border-right: 1px solid #e5e7eb;
+    }
+
+    /* Sidebar text */
+    section[data-testid="stSidebar"] .stMarkdown {
+        color: #1e293b;
+    }
 
     /* ── Buttons ── */
     .stButton > button {
-        background: linear-gradient(135deg,#3b82f6,#2563eb);
+        background: linear-gradient(135deg,#2563eb,#1d4ed8);
         color:#fff;
         border:none;
         border-radius:8px;
         font-weight:600;
         padding:0.5rem 1.5rem;
     }
-    .stButton > button:hover { opacity:0.9; }
+    .stButton > button:hover { opacity:0.9; background: #1d4ed8; }
 
     div[data-testid="stDownloadButton"] > button {
         background: linear-gradient(135deg,#059669,#047857) !important;
     }
-</style>
-""", unsafe_allow_html=True)
+
+    /* Headers text color */
+    h1, h2, h3, h4, .stMarkdown {
+        color: #1e293b;
+    }
+
+    /* File uploader */
+    .stFileUploader {
+        background-color: #f8fafc;
+        border: 1px dashed #cbd5e1;
+        border-radius: 12px;
+        padding: 1rem;
+    }
+</style>""", unsafe_allow_html=True)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
