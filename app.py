@@ -266,21 +266,24 @@ if uploaded_file:
             except ValueError as e:
                 st.error(f"❌ PDF Error: {e}")
                 st.stop()
-                # ── Step 3: Extract claims ───────────────────────────────────────────
+
+        # ── Step 3: Extract claims ───────────────────────────────────────────
         with st.status("🧠 Identifying factual claims with Gemini…", expanded=True) as status_box:
-           try:
-               claims = extract_claims_from_text(pdf_text, gemini_api_key)
-               st.write(f"✅ Found **{len(claims)}** verifiable claim(s).")
-        MAX_CLAIMS = 5
-        if len(claims) > MAX_CLAIMS:
-            st.warning(f"⚠️ Found {len(claims)} claims. Due to API rate limits (20 requests/day), only the first {MAX_CLAIMS} will be verified.")
-            claims = claims[:MAX_CLAIMS]
-            st.info(f"💡 To verify more claims, wait for daily quota reset at Pacific Time midnight or upgrade to a paid tier.")
-        
-        status_box.update(label=f"{len(claims)} claims identified!", state="complete")
-    except ValueError as e:
-        st.error(f"❌ Claim Extraction Error: {e}")
-        st.stop()
+            try:
+                claims = extract_claims_from_text(pdf_text, gemini_api_key)
+                st.write(f"✅ Found **{len(claims)}** verifiable claim(s).")
+                
+                # Limit claims to avoid API quota issues (20 requests/day)
+                MAX_CLAIMS = 5
+                if len(claims) > MAX_CLAIMS:
+                    st.warning(f"⚠️ Found {len(claims)} claims. Due to API rate limits (20 requests/day), only the first {MAX_CLAIMS} will be verified.")
+                    claims = claims[:MAX_CLAIMS]
+                    st.info(f"💡 To verify more claims, wait for daily quota reset at Pacific Time midnight or upgrade to a paid tier.")
+                
+                status_box.update(label=f"{len(claims)} claims identified!", state="complete")
+            except ValueError as e:
+                st.error(f"❌ Claim Extraction Error: {e}")
+                st.stop()
 
         # Preview extracted claims
         with st.expander(f"📋 View {len(claims)} Extracted Claims", expanded=False):
@@ -289,9 +292,9 @@ if uploaded_file:
 
         # ── Step 4 & 5: Verify each claim ───────────────────────────────────
         st.markdown("### 🔎 Verifying Claims…")
-        progress_bar   = st.progress(0)
+        progress_bar = st.progress(0)
         progress_label = st.empty()
-        verdicts       = []
+        verdicts = []
 
         def update_progress(current, total, claim_text):
             pct = int((current / total) * 100) if total else 0
@@ -314,8 +317,8 @@ if uploaded_file:
             st.stop()
 
         # Save to session state
-        st.session_state["verdicts"]       = verdicts
-        st.session_state["document_name"]  = uploaded_file.name
+        st.session_state["verdicts"] = verdicts
+        st.session_state["document_name"] = uploaded_file.name
 
         st.success(f"🎉 Fact-check complete! {len(verdicts)} claim(s) analysed.")
         time.sleep(0.5)
@@ -326,16 +329,15 @@ if uploaded_file:
 #  Step 6 — Display results (persisted in session state)
 # ─────────────────────────────────────────────────────────────────────────────
 if "verdicts" in st.session_state and st.session_state["verdicts"]:
-    verdicts      = st.session_state["verdicts"]
+    verdicts = st.session_state["verdicts"]
     document_name = st.session_state.get("document_name", "document.pdf")
 
     st.markdown("---")
     st.markdown("## 📊 Fact-Check Results")
 
     # ── Summary metrics ──────────────────────────────────────────────────────
-    stats   = compute_summary_stats(verdicts)
-    total   = len(verdicts)
-    counts  = {
+    total = len(verdicts)
+    counts = {
         "Verified":     sum(1 for v in verdicts if v["status"] == "Verified"),
         "Inaccurate":   sum(1 for v in verdicts if v["status"] == "Inaccurate"),
         "False":        sum(1 for v in verdicts if v["status"] == "False"),
@@ -388,10 +390,10 @@ if "verdicts" in st.session_state and st.session_state["verdicts"]:
     # ── Results display ───────────────────────────────────────────────────────
     if view_mode == "Cards":
         for v in filtered:
-            status  = v["status"]
-            emoji   = get_status_emoji(status)
-            color   = get_status_color(status)
-            source  = v.get("source", "N/A")
+            status = v["status"]
+            emoji = get_status_emoji(status)
+            color = get_status_color(status)
+            source = v.get("source", "N/A")
             src_html = (
                 f'<a href="{source}" target="_blank">{source[:70]}…</a>'
                 if source and source != "N/A" and source.startswith("http")
@@ -423,6 +425,7 @@ if "verdicts" in st.session_state and st.session_state["verdicts"]:
 
         styled = df.style.map(color_status, subset=["Status"])
         st.dataframe(styled, use_container_width=True, hide_index=True)
+    
     # ── Download report ───────────────────────────────────────────────────────
     st.markdown("---")
     st.markdown("### 📥 Download Report")
