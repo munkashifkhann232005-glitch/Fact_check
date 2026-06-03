@@ -131,7 +131,7 @@ Return ONLY a valid JSON object with exactly these keys (no markdown, no extra t
 
     try:
         response = client.models.generate_content(
-            model="gemini-2.0-flash",
+            model="gemini-2.5-flash",
             contents=prompt,
         )
         response_text = response.text.strip()
