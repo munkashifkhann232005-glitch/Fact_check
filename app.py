@@ -266,16 +266,21 @@ if uploaded_file:
             except ValueError as e:
                 st.error(f"❌ PDF Error: {e}")
                 st.stop()
-
-        # ── Step 3: Extract claims ───────────────────────────────────────────
+                # ── Step 3: Extract claims ───────────────────────────────────────────
         with st.status("🧠 Identifying factual claims with Gemini…", expanded=True) as status_box:
-            try:
-                claims = extract_claims_from_text(pdf_text, gemini_api_key)
-                st.write(f"✅ Found **{len(claims)}** verifiable claim(s).")
-                status_box.update(label=f"{len(claims)} claims identified!", state="complete")
-            except ValueError as e:
-                st.error(f"❌ Claim Extraction Error: {e}")
-                st.stop()
+           try:
+               claims = extract_claims_from_text(pdf_text, gemini_api_key)
+               st.write(f"✅ Found **{len(claims)}** verifiable claim(s).")
+        MAX_CLAIMS = 5
+        if len(claims) > MAX_CLAIMS:
+            st.warning(f"⚠️ Found {len(claims)} claims. Due to API rate limits (20 requests/day), only the first {MAX_CLAIMS} will be verified.")
+            claims = claims[:MAX_CLAIMS]
+            st.info(f"💡 To verify more claims, wait for daily quota reset at Pacific Time midnight or upgrade to a paid tier.")
+        
+        status_box.update(label=f"{len(claims)} claims identified!", state="complete")
+    except ValueError as e:
+        st.error(f"❌ Claim Extraction Error: {e}")
+        st.stop()
 
         # Preview extracted claims
         with st.expander(f"📋 View {len(claims)} Extracted Claims", expanded=False):
